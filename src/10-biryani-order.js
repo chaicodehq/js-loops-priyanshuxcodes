@@ -35,4 +35,30 @@
  */
 export function biryaniBatchProcessor(orders) {
   // Your code here
+  if (!Array.isArray(orders) || orders.length === 0) return { totalBatches: 0, totalPlates: 0, ordersProcessed: 0 }
+
+  let batches = 0
+  let plates = 0
+  let ordersProcessed = 0
+
+  let i = 0
+  do {
+    let batchSize = orders[i]
+    if(batchSize <= 0 || !Number.isInteger(batchSize)){
+      i++
+      continue
+    }
+    plates += batchSize
+    ordersProcessed ++
+    if(batchSize > 5) {
+      while (batchSize >= 5){
+        batchSize -= 5
+        batches++
+      }
+    }
+    if(batchSize <= 5 && batchSize != 0) batches++
+    i++
+  } while(i < orders.length)
+
+    return {totalBatches: batches,totalPlates: plates, ordersProcessed}
 }

@@ -46,4 +46,50 @@
  */
 export function railwayReservation(passengers, trains) {
   // Your code here
+  if (
+    !Array.isArray(passengers) ||
+    !Array.isArray(trains) ||
+    passengers.length === 0 ||
+    trains.length === 0
+  )
+    return [];
+
+  let ans = [];
+
+  for (let i = 0; i < passengers.length; i++) {
+    let passName = "", trainNumber = "", allotedClass = "", currStatus =""
+    const details = { passName, trainNumber, allotedClass, currStatus };
+    let trainFound = false;
+    details.passName = passengers[i].name;
+    details.trainNumber = passengers[i].trainNumber;
+    for (let j = 0; j < trains.length; j++) {
+      if (passengers[i].trainNumber === trains[j].trainNumber) {
+        trainFound = true;
+        if (trains[j].seats[passengers[i].preferred] > 0) {
+          trains[j].seats[passengers[i].preferred]--;
+          details.allotedClass = passengers[i].preferred;
+          details.currStatus = "confirmed";
+        } else if (trains[j].seats[passengers[i].fallback] > 0) {
+          trains[j].seats[passengers[i].fallback]--;
+          details.allotedClass = passengers[i].fallback;
+          details.currStatus = "confirmed";
+        } else {
+          details.allotedClass = passengers[i].preferred;
+          details.currStatus = "waitlisted";
+        }
+        break
+      }
+    }
+    if (!trainFound) {
+      details.allotedClass = null;
+      details.currStatus = "train_not_found";
+    }
+    ans.push({
+      name: details.passName,
+      trainNumber: details.trainNumber,
+      class: details.allotedClass,
+      status: details.currStatus,
+    });
+  }
+  return ans;
 }
